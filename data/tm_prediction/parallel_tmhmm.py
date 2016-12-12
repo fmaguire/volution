@@ -6,6 +6,7 @@ Script to process tmhmm in parallel
 
 from Bio import SeqIO
 
+import shutil
 import argparse
 import os
 import sys
@@ -22,16 +23,19 @@ def parse_and_validate(args):
     parser.add_argument("-i", "--input_file",
                         help="input fast file",
                         type=str,
+                        required=True,
                         action="store")
 
     parser.add_argument("-o", "--output_dir",
                         help="output directory",
                         type=str,
+                        required=True,
                         action="store")
 
     parser.add_argument("-p", "--cpu",
                         help="number of cores",
                         type=int,
+                        required=True,
                         action="store")
 
     args = parser.parse_args()
@@ -54,9 +58,9 @@ def split_input(fasta_fp, input_name):
     return a list of these filepaths to split fasta
     """
 
-    n = 1000
+    n = 500
 
-    sequences = SeqIO.parse(fasta_fp, 'fasta')
+    sequences = list(SeqIO.parse(fasta_fp, 'fasta'))
 
     subset_files = []
 
@@ -96,7 +100,7 @@ def run_tmhmm(fasta_files, cores):
     pool_output = [pool.apply_async(subprocess.call,
                                     (str(cmd), ),
                                     {'stderr': subprocess.PIPE,
-                                     'shell'; True})
+                                     'shell': True})
                     for cmd in cmds]
 
     pool.close()
@@ -107,19 +111,18 @@ def run_tmhmm(fasta_files, cores):
 
 
 
-def combine_and_clean(tmhmm_files, , output_dir):
+def combine_and_clean(tmhmm_files, input_name, output_dir):
     """
     Combine tmhmm files
     """
 
-    cmd = "cat {} > {}".format(" ".join(output_files),
+    cmd = "cat {} > {}".format(" ".join(tmhmm_files),
+                               os.path.join(output_dir, input_name + '.tmhmm'))
 
     exit = subprocess.run(cmd, shell=True)
 
     if exit.returncode == 0:
         shutil.rmtree('tmp')
-
-
 
 if __name__ == '__main__':
 
@@ -128,11 +131,11 @@ if __name__ == '__main__':
     if not os.path.isdir('tmp'):
         os.mkdir('tmp')
 
-    input_name = os.path.splitext(os.path.split(args.input_fasta)[-1])[0]
+    input_name = os.path.splitext(os.path.split(args.input_file)[-1])[0]
 
     subset_fps = split_input(args.input_file, input_name)
 
     subset_tmhmm_outputs = run_tmhmm(subset_fps, args.cpu)
 
     output_filename = combine_and_clean(subset_tmhmm_outputs, input_name,
-                                        args.output_directory)
+                                        args.output_dir)
