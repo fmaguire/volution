@@ -16,7 +16,7 @@ def main(args):
     tmhmm_out_fh = open(args[1], 'rU')
     input_seq_fh = open(args[2], 'rU')
 
-    output_name = os.path.splitext(os.path.basename(sys.args[2]))[0]
+    output_name = os.path.splitext(os.path.basename(args[2]))[0]
 
     output_file = open(output_name + '_io_tm_seqs.fasta', 'w')
     weird_output_file = open(output_name + '_weird_tm_seqs.fasta', 'w')
