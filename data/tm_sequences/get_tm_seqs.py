@@ -15,11 +15,7 @@ def main(args):
 
     tmhmm_out_fh = open(args[1], 'rU')
     input_seq_fh = open(args[2], 'rU')
-
-    output_name = os.path.splitext(os.path.basename(args[2]))[0]
-
-    output_file = open(output_name + '_io_tm_seqs.fasta', 'w')
-    weird_output_file = open(output_name + '_weird_tm_seqs.fasta', 'w')
+    output_file = open(args[3], 'rU')
 
     input_seqs = SeqIO.parse(input_seq_fh, "fasta")
 
@@ -82,9 +78,11 @@ def main(args):
                     tm_orientation = 'io'
 
                 if tm_orientation == 'oo' or tm_orientation == 'ii':
-                    weird_output_file.write(">" + seq_record.description + '_' + str(n) + '\n')
-                    weird_output_file.write(tm_seq + '\n')
-                    next()
+                    print("Error weird orientation")
+                    sys.exit(1)
+                    #weird_output_file.write(">" + seq_record.description + '_' + str(n) + '\n')
+                    #weird_output_file.write(tm_seq + '\n')
+                    #next()
 
 
 
@@ -97,7 +95,6 @@ def main(args):
     input_seq_fh.close()
 
     output_file.close()
-    weird_output_file.close()
 
 if __name__=='__main__':
 

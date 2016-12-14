@@ -15,7 +15,7 @@ all: matrix
 
 
 clean:
-	rm $(TM_PREDS) $(TM_SEQS) $(MATRICES) $(shell expand data/tmp/*)
+	-rm -rf $(TM_PREDS) $(TM_SEQS) $(MATRICES) data/tmp/*
 
 matrix: $(TM_SEQS) \
 		$(BIN_DIR)/create_matrices.py
@@ -25,7 +25,7 @@ matrix: $(TM_SEQS) \
 data/tm_sequences/%.tmseqs: data/tm_prediction/%.tmhmm \
 		data/raw_sequence_data/%.fas \
 		$(BIN_DIR)/get_tm_seqs.py
-	python $(BIN_DIR)/get_tm_seqs \
+	python $(BIN_DIR)/get_tm_seqs.py \
 		$< \
 		data/raw_sequence_data/$*.fas \
 		data/tm_sequences/$*.tmseqs 

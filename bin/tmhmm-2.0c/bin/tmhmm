@@ -60,7 +60,7 @@ if ($opt_d) { $err = ""; }
 else { $err = "2>/dev/null"; }
 
 # Make working dir (initail path MUST exist)
-$wd = "TMHMM_$$";
+$wd = "data/tmp/TMHMM_$$";
 mkdir "$opt_workdir/$wd",0777 if ($opt_plot);
 
 # Programs to run

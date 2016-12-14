@@ -26,8 +26,8 @@ def parse_and_validate(args):
                         required=True,
                         action="store")
 
-    parser.add_argument("-o", "--output_dir",
-                        help="output directory",
+    parser.add_argument("-o", "--output_file",
+                        help="output file",
                         type=str,
                         required=True,
                         action="store")
@@ -43,10 +43,6 @@ def parse_and_validate(args):
 
     if not os.path.isfile(args.input_file):
         print("Input file {} does not exist".format(args.input_file))
-        sys.exit(1)
-
-    if not os.path.isdir(args.output_dir):
-        print("Output directory {} does not exist".format(args.output_dir))
         sys.exit(1)
 
     return parser.parse_args()
@@ -70,7 +66,7 @@ def split_input(fasta_fp, input_name):
     for index, i in enumerate(range(0, len(sequences), n)):
         subset_seqs = [x for x in sequences[i: i+n]]
 
-        subset_fp = os.path.join('tmp',
+        subset_fp = os.path.join('data/tmp',
                                  input_name + '_{}_subset.fasta'.format(index))
 
         SeqIO.write(subset_seqs, subset_fp, 'fasta')
@@ -90,12 +86,15 @@ def run_tmhmm(fasta_files, cores):
 
     for file_path in fasta_files:
         output_path = file_path + '.tmhmm'
-        cmds.append('tmhmm {} | grep -v "PredHel=0" > {}'.format(file_path,
+        cmds.append('bin/tmhmm-2.0c/bin/tmhmm {} | grep -v "PredHel=0" > {}'.format(file_path,
                                                                  output_path))
+
         output_files.append(output_path)
 
 
     pool = multiprocessing.Pool(processes = cores)
+
+    print(cmds)
 
     pool_output = [pool.apply_async(subprocess.call,
                                     (str(cmd), ),
@@ -111,25 +110,22 @@ def run_tmhmm(fasta_files, cores):
 
 
 
-def combine_and_clean(tmhmm_files, input_name, output_dir):
+def combine_and_clean(tmhmm_files, input_name, output_file):
     """
     Combine tmhmm files
     """
 
     cmd = "cat {} > {}".format(" ".join(tmhmm_files),
-                               os.path.join(output_dir, input_name + '.tmhmm'))
+                               output_file)
 
     exit = subprocess.run(cmd, shell=True)
-
-    if exit.returncode == 0:
-        shutil.rmtree('tmp')
 
 if __name__ == '__main__':
 
     args = parse_and_validate(sys.argv)
 
-    if not os.path.isdir('tmp'):
-        os.mkdir('tmp')
+    if not os.path.isdir('data/tmp'):
+        os.mkdir('data/tmp')
 
     input_name = os.path.splitext(os.path.split(args.input_file)[-1])[0]
 
@@ -137,5 +133,7 @@ if __name__ == '__main__':
 
     subset_tmhmm_outputs = run_tmhmm(subset_fps, args.cpu)
 
+    output_dir = os.path.split(args.output_file)[0]
+
     output_filename = combine_and_clean(subset_tmhmm_outputs, input_name,
-                                        args.output_dir)
+                                        output_dir)

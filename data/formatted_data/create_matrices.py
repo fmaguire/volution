@@ -144,34 +144,42 @@ def test_train(X, Y, X_lengths, testprop=0.2, CV=False):
 
     return train, test
 
+
+def touch(fname, times=None):
+    with open(fname, 'a'):
+        os.utime(fname, times)
+
 if __name__=='__main__':
 
-    data_locs = {'archaea': "../tm_prediction/full_data/tmhmm/tm_seqs/archaea_data.txt",
-                 'bacteria': "../tm_prediction/validation/tmhmm/tm_seqs/bacteria_seqs.txt",
-                 'eukaryote': "../tm_prediction/full_data/tmhmm/tm_seqs/eukaryote_data.txt"}
+    #data_locs = {'archaea': "../tm_prediction/full_data/tmhmm/tm_seqs/archaea_data.txt",
+    #             'bacteria': "../tm_prediction/validation/tmhmm/tm_seqs/bacteria_seqs.txt",
+    #             'eukaryote': "../tm_prediction/full_data/tmhmm/tm_seqs/eukaryote_data.txt"}
 
-    X_raw, Y_raw = create_X_Y(data_locs)
-    print("Raw X y parsed")
+    #X_raw, Y_raw = create_X_Y(data_locs)
+    #print("Raw X y parsed")
 
-    X_resample, Y_resample = balance_classes(X_raw, Y_raw)
-    print("X y resampled")
+    #X_resample, Y_resample = balance_classes(X_raw, Y_raw)
+    #print("X y resampled")
 
-    X_resample, X_lengths = pad_X(X_resample, 40)
-    print("X y padded")
+    #X_resample, X_lengths = pad_X(X_resample, 40)
+    #print("X y padded")
 
-    X, encoding_dict = x_encode(X_resample)
-    with open('x_encoding_dict.pkl', 'wb') as fh:
-        pickle.dump(encoding_dict, fh)
+    #X, encoding_dict = x_encode(X_resample)
+    #with open('x_encoding_dict.pkl', 'wb') as fh:
+    #    pickle.dump(encoding_dict, fh)
 
-    Y = y_encode(Y_resample)
-    X = np.array(X)
-    X_lengths = np.array(X_lengths)
-    print("X y encoded")
+    #Y = y_encode(Y_resample)
+    #X = np.array(X)
+    #X_lengths = np.array(X_lengths)
+    #print("X y encoded")
 
-    Train, Test = test_train(X, Y, X_lengths)
-    Test, CV = test_train(*Test, testprop=0.5, CV=True)
-    #print("X y test/train split")
+    #Train, Test = test_train(X, Y, X_lengths)
+    #Test, CV = test_train(*Test, testprop=0.5, CV=True)
+    ##print("X y test/train split")
 
-    train_data, train_labels, train_lengths = Train
-    cv_data, cv_label, cv_seqlen = CV
+    #train_data, train_labels, train_lengths = Train
+    #cv_data, cv_label, cv_seqlen = CV
 
+    touch("data/formatted_data/X.pkl")
+    touch("data/formatted_data/y.pkl")
+    touch("data/formatted_data/info.txt")
