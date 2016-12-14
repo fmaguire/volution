@@ -2,17 +2,19 @@ INPUT_FASTA := $(shell find data/raw_sequence_data -name "*.fas")
 TM_PREDS := $(subst raw_sequence_data,tm_prediction,$(INPUT_FASTA:.fas=.tmhmm))
 TM_SEQS := $(subst raw_sequence_data,tm_sequences,$(INPUT_FASTA:.fas=.tmseqs))
 MATRICES := data/formatted_data/X.pkl \
-	data/pickled_matrices/y.pkl \
-	data/pickled_matrices/info.txt
+	data/formatted_data/y.pkl \
+	data/formatted_data/info.txt
 matrix := $(MATRICES)
 BIN_DIR := bin
 
 CORES_PER_JOB := 5
 
-.PHONE: all clean
-
 all: matrix
 
+.SECONDARY: $(TM_PREDS)
+
+tidy:
+	-rm -rf data/tmp/*
 
 clean:
 	-rm -rf $(TM_PREDS) $(TM_SEQS) $(MATRICES) data/tmp/*

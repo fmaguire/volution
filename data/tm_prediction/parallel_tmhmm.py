@@ -6,7 +6,6 @@ Script to process tmhmm in parallel
 
 from Bio import SeqIO
 
-import shutil
 import argparse
 import os
 import sys
@@ -94,8 +93,6 @@ def run_tmhmm(fasta_files, cores):
 
     pool = multiprocessing.Pool(processes = cores)
 
-    print(cmds)
-
     pool_output = [pool.apply_async(subprocess.call,
                                     (str(cmd), ),
                                     {'stderr': subprocess.PIPE,
@@ -136,4 +133,4 @@ if __name__ == '__main__':
     output_dir = os.path.split(args.output_file)[0]
 
     output_filename = combine_and_clean(subset_tmhmm_outputs, input_name,
-                                        output_dir)
+                                        args.output_file)

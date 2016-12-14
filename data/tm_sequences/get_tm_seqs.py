@@ -3,26 +3,25 @@
 import sys
 import os
 import re
-from tqdm import tqdm
 from Bio import SeqIO
 
 import argparse
 
 def main(args):
 
-    if len(args) is not 3:
-        print("get_seqs.py SORTED_tmhmm_output_filepath SORTED_input_fasta_filepath")
+    if len(args) is not 4:
+        print("get_seqs.py SORTED_tmhmm_output_filepath SORTED_input_fasta_filepath output_file")
 
     tmhmm_out_fh = open(args[1], 'rU')
     input_seq_fh = open(args[2], 'rU')
-    output_file = open(args[3], 'rU')
+    output_file = open(args[3], 'w')
 
     input_seqs = SeqIO.parse(input_seq_fh, "fasta")
 
     # get first record
     seq_record = input_seqs.__next__()
 
-    for pred_line in tqdm(tmhmm_out_fh.readlines()):
+    for pred_line in tmhmm_out_fh.readlines():
 
         pred_line = pred_line.split()
 
@@ -86,7 +85,7 @@ def main(args):
 
 
 
-                output_file.write(">" + seq_record.description + '_' + str(n) + '\n')
+                output_file.write(">" + seq_record.description + '_' + str(tm_seq_indices) + '_' + str(n) + '\n')
                 output_file.write(tm_seq + '\n')
 
                 n+=1

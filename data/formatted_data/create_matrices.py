@@ -1,16 +1,14 @@
 
 # coding: utf-8
 
-# In[1]:
-
-get_ipython().magic(u'matplotlib inline')
-from tqdm import tqdm
-import matplotlib.pyplot as plt
-import numpy as np
-import sklearn
-import seaborn as sns
+#get_ipython().magic(u'matplotlib inline')
+#from tqdm import tqdm
+#import matplotlib.pyplot as plt
+#import numpy as np
+#import sklearn
+#import seaborn as sns
 import os
-import pickle
+#import pickle
 
 # ### Parse data
 #
