@@ -7,7 +7,7 @@ MATRICES := data/formatted_data/X.pkl \
 matrix := $(MATRICES)
 BIN_DIR := bin
 
-CORES_PER_JOB := 5
+CORES_PER_JOB := 7
 
 all: matrix
 

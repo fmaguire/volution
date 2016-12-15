@@ -53,7 +53,7 @@ def split_input(fasta_fp, input_name):
     return a list of these filepaths to split fasta
     """
 
-    n = 500
+    n = 5000
 
     sequences = list(SeqIO.parse(fasta_fp, 'fasta'))
 
